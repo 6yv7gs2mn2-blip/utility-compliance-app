@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="CA Utility Compliance">
+    <title>CA Underground Utility Compliance</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    <div class="app-container">
+        
+        <!-- Header -->
+        <header class="app-header">
+            <h1>CA Utility Compliance</h1>
+            <p class="subtitle">Underground Utility Plan Reviewer</p>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="nav-tabs">
+            <button class="nav-btn active" data-tab="upload">Upload Plan</button>
+            <button class="nav-btn" data-tab="specs">Spec Check</button>
+            <button class="nav-btn" data-tab="rfi">RFI Generator</button>
+            <button class="nav-btn" data-tab="takeoff">Takeoff</button>
+            <button class="nav-btn" data-tab="reports">Reports</button>
+        </nav>
+
+        <!-- Tab Content -->
+        <main class="tab-content">
+
+            <!-- TAB 1: UPLOAD PLAN -->
+            <section id="upload" class="tab-pane active">
+                <div class="card">
+                    <h2>📄 Upload Utility Plan</h2>
+                    
+                    <div class="upload-area" id="uploadArea">
+                        <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                        <p><strong>Tap to upload or drag a file</strong></p>
+                        <p class="small-text">PDF, PNG, JPG, or WebP</p>
+                        <input type="file" id="planFile" accept=".pdf,.png,.jpg,.jpeg,.webp" style="display:none;">
+                    </div>
+
+                    <div id="filePreview" style="display:none;">
+                        <img id="previewImage" style="max-width:100%; margin:10px 0;">
+                        <button class="btn-secondary" id="clearFile">Clear & Upload New Plan</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>📋 Plan Details</h3>
+                    <div class="form-group">
+                        <label>Project Name</label>
+                        <input type="text" id="projectName" placeholder="e.g., Main St Water Main">
+                    </div>
+                    <div class="form-group">
+                        <label>City/Agency</label>
+                        <input type="text" id="agency" placeholder="e.g., Santa Barbara Public Works">
+                    </div>
+                    <div class="form-group">
+                        <label>Utility Type</label>
+                        <select id="utilityType">
+                            <option value="">Select...</option>
+                            <option value="water">Water Main / Lateral</option>
+                            <option value="sewer">Sewer / Sanitary Sewer</option>
+                            <option value="storm">Storm Drain</option>
+                            <option value="electric">Electric / Power</option>
+                            <option value="gas">Gas</option>
+                            <option value="telecom">Telecom / Fiber</option>
+                            <option value="duct">Duct Bank</option>
+                        </select>
+                    </div>
+                    <button class="btn-primary" id="saveDetails">Save Plan Details</button>
+                </div>
+            </section>
+
+            <!-- TAB 2: SPEC CHECK -->
+            <section id="specs" class="tab-pane">
+                <div class="card">
+                    <h2>✅ Specification Checker</h2>
+                    <p class="info-text">Enter your plan specs to check against California standards</p>
+                    
+                    <div class="form-group">
+                        <label>Utility Type</label>
+                        <select id="specUtilityType">
+                            <option value="">Select...</option>
+                            <option value="water">Water Main / Lateral</option>
+                            <option value="sewer">Sewer / Sanitary Sewer</option>
+                            <option value="storm">Storm Drain</option>
+                            <option value="electric">Electric / Power</option>
+                            <option value="gas">Gas</option>
+                            <option value="telecom">Telecom / Fiber</option>
+                            <option value="duct">Duct Bank</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Pipe/Conduit Material</label>
+                        <input type="text" id="pipeMaterial" placeholder="e.g., PVC, Steel, Copper, HDPE">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Diameter (inches)</label>
+                        <input type="number" id="pipeDiameter" placeholder="e.g., 8, 12, 24">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Trench Depth (feet)</label>
+                        <input type="number" id="trenchDepth" placeholder="e.g., 5, 8, 12" step="0.5">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Bedding Class</label>
+                        <select id="beddingClass">
+                            <option value="">Select...</option>
+                            <option value="A">Class A (4" min sand bedding)</option>
+                            <option value="B">Class B (4" min sand bedding)</option>
+                            <option value="C">Class C (2" min sand bedding)</option>
+                            <option value="D">Class D (Trench bottom)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Cover to Pipe Top (feet)</label>
+                        <input type="number" id="pipecover" placeholder="e.g., 3, 4, 5" step="0.5">
+                    </div>
+
+                    <button class="btn-primary" id="runSpecCheck">Run Compliance Check</button>
+                </div>
+
+                <div id="complianceResults" style="display:none;">
+                    <div class="card results-card">
+                        <h3>📊 Compliance Results</h3>
+                        <div id="resultsContent"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 3: RFI GENERATOR -->
+            <section id="rfi" class="tab-pane">
+                <div class="card">
+                    <h2>📝 RFI Generator</h2>
+                    <p class="info-text">Create a Request for Information for plan conflicts or missing details</p>
+                    
+                    <div class="form-group">
+                        <label>RFI Issue Type</label>
+                        <select id="rfiType">
+                            <option value="">Select...</option>
+                            <option value="conflict">Utility Conflict / Separation Issue</option>
+                            <option value="missing">Missing Specification</option>
+                            <option value="noncompliant">Non-Compliant Detail</option>
+                            <option value="clarification">Design Clarification</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Issue Description</label>
+                        <textarea id="rfiDescription" placeholder="Describe the issue found on the plan..." rows="4"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Reference Sheet / Detail #</label>
+                        <input type="text" id="rfiReference" placeholder="e.g., Sheet C-3, Detail 5">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Applicable Standard/Spec</label>
+                        <input type="text" id="rfiStandard" placeholder="e.g., Greenbook Section 200, Local Std Detail 4">
+                    </div>
+
+                    <button class="btn-primary" id="generateRFI">Generate RFI</button>
+                </div>
+
+                <div id="rfiOutput" style="display:none;">
+                    <div class="card results-card">
+                        <h3>📋 RFI Draft</h3>
+                        <div id="rfiContent"></div>
+                        <button class="btn-secondary" id="copyRFI">Copy RFI</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 4: TAKEOFF CALCULATOR -->
+            <section id="takeoff" class="tab-pane">
+                <div class="card">
+                    <h2>📏 Takeoff Calculator</h2>
+                    <p class="info-text">Calculate quantities for trenching, pipe, bedding, and backfill</p>
+                    
+                    <div class="form-group">
+                        <label>Trench Length (linear feet)</label>
+                        <input type="number" id="trenchLength" placeholder="e.g., 500, 1200" step="0.5">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Trench Width (feet)</label>
+                        <input type="number" id="trenchWidth" placeholder="e.g., 2, 3, 4" step="0.5">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Trench Depth (feet)</label>
+                        <input type="number" id="takeoffDepth" placeholder="e.g., 5, 8" step="0.5">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Pipe Diameter (inches)</label>
+                        <input type="number" id="takeoffDiameter" placeholder="e.g., 8, 12, 24">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Bedding Depth (inches)</label>
+                        <input type="number" id="beddingDepth" placeholder="e.g., 4, 6" value="4">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Bedding Height Above Pipe (inches)</label>
+                        <input type="number" id="beddingHeightAbove" placeholder="e.g., 12, 18" value="12">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Number of Vaults/Handholes</label>
+                        <input type="number" id="vaultCount" placeholder="e.g., 0, 2, 5" value="0">
+                    </div>
+
+                    <button class="btn-primary" id="calculateTakeoff">Calculate Quantities</button>
+                </div>
+
+                <div id="takeoffResults" style="display:none;">
+                    <div class="card results-card">
+                        <h3>📊 Takeoff Summary</h3>
+                        <div id="takeoffContent"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 5: REPORTS -->
+            <section id="reports" class="tab-pane">
+                <div class="card">
+                    <h2>📑 Compliance Report</h2>
+                    <p class="info-text">View and export your compliance findings</p>
+                    
+                    <div id="reportContent">
+                        <p style="text-align:center; color:#999;">No reports generated yet. Run a spec check or generate an RFI first.</p>
+                    </div>
+
+                    <button class="btn-secondary" id="exportReport" style="margin-top:10px;">Export as PDF</button>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
